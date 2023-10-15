@@ -14,6 +14,7 @@ type Message struct {
 	BodyID     string
 }
 
+// HTTP message
 var (
 	// 4xx
 	ErrMsgBadRequest = Message{
