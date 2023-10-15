@@ -11,7 +11,9 @@ import (
 	"github.com/adiatma85/own-go-sdk/errors"
 	"github.com/adiatma85/own-go-sdk/instrument"
 	"github.com/adiatma85/own-go-sdk/log"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 var ErrNotFound = sql.ErrNoRows
