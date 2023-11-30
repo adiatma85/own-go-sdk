@@ -21,3 +21,5 @@ mock-all:
 	@make mock util=sql subutil=sql_cmd
 	@make mock util=query subutil=sql_builder
 	@make mock util=redis subutil=redis
+	@make mock util=parser subutil=parser
+	@make mock util=parser subutil=json
