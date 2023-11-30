@@ -117,4 +117,12 @@ var (
 		BodyEN:     "Service is unavailable. Please contact the administrator.",
 		BodyID:     "Layanan sedang tidak tersedia. Mohon hubungi administrator.",
 	}
+
+	ErrMsgLockExist = Message{
+		StatusCode: http.StatusTooManyRequests,
+		TitleEN:    "Please wait for a while before requesting a new password",
+		TitleID:    "Mohon tunggu sejenak sebelum meminta password baru",
+		BodyEN:     "",
+		BodyID:     "",
+	}
 )
