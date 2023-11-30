@@ -97,6 +97,28 @@ const (
 	CodeJSONUnmarshalError
 )
 
+const (
+	// Redis Cache Error
+	CodeRedisGet = Code(iota + 3900)
+	CodeRedisSetex
+	CodeFailedLock
+	CodeFailedReleaseLock
+	CodeLockExist
+	CodeCacheMarshal
+	CodeCacheUnmarshal
+	CodeCacheGetSimpleKey
+	CodeCacheSetSimpleKey
+	CodeCacheDeleteSimpleKey
+	CodeCacheGetHashKey
+	CodeCacheSetHashKey
+	CodeCacheDeleteHashKey
+	CodeCacheSetExpiration
+	CodeCacheDecode
+	CodeCacheLockNotAcquired
+	CodeCacheInvalidCastType
+	CodeCacheNotFound
+)
+
 // Error messages only
 var ErrorMessages = AppMessage{
 	CodeInvalidValue:            ErrMsgBadRequest,
@@ -148,4 +170,23 @@ var ErrorMessages = AppMessage{
 	// File I/O error
 	CodeFile:               ErrMsgInternalServerError,
 	CodeFilePathOpenFailed: ErrMsgInternalServerError,
+
+	CodeLockExist:            ErrMsgLockExist,
+	CodeRedisGet:             ErrMsgInternalServerError,
+	CodeRedisSetex:           ErrMsgInternalServerError,
+	CodeFailedLock:           ErrMsgInternalServerError,
+	CodeFailedReleaseLock:    ErrMsgInternalServerError,
+	CodeCacheMarshal:         ErrMsgInternalServerError,
+	CodeCacheUnmarshal:       ErrMsgInternalServerError,
+	CodeCacheGetSimpleKey:    ErrMsgInternalServerError,
+	CodeCacheSetSimpleKey:    ErrMsgInternalServerError,
+	CodeCacheDeleteSimpleKey: ErrMsgInternalServerError,
+	CodeCacheGetHashKey:      ErrMsgInternalServerError,
+	CodeCacheSetHashKey:      ErrMsgInternalServerError,
+	CodeCacheDeleteHashKey:   ErrMsgInternalServerError,
+	CodeCacheSetExpiration:   ErrMsgInternalServerError,
+	CodeCacheDecode:          ErrMsgInternalServerError,
+	CodeCacheLockNotAcquired: ErrMsgInternalServerError,
+	CodeCacheInvalidCastType: ErrMsgInternalServerError,
+	CodeCacheNotFound:        ErrMsgInternalServerError,
 }
