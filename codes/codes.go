@@ -98,6 +98,18 @@ const (
 )
 
 const (
+	// Reset Password Error
+	CodePasswordDoesNotMatch = Code(iota + 3800)
+	CodeFailedResetPassword
+	CodeResetPasswordTokenExpired
+	CodeEmptyEmail
+	CodeInvalidEmail
+	CodeSameCurrentPassword
+	CodePasswordIsNotFilled
+	CodeResetPasswordTokenInvalid
+)
+
+const (
 	// Redis Cache Error
 	CodeRedisGet = Code(iota + 3900)
 	CodeRedisSetex
@@ -170,6 +182,15 @@ var ErrorMessages = AppMessage{
 	// File I/O error
 	CodeFile:               ErrMsgInternalServerError,
 	CodeFilePathOpenFailed: ErrMsgInternalServerError,
+
+	CodeFailedResetPassword:       ErrMsgResetPassword,
+	CodePasswordDoesNotMatch:      ErrMsgPasswordDoesNotMatch,
+	CodeResetPasswordTokenExpired: ErrMsgResetTokenExpired,
+	CodeEmptyEmail:                ErrMsgEmptyEmail,
+	CodeInvalidEmail:              ErrMsgInvalidEmail,
+	CodeSameCurrentPassword:       ErrMsgSameCurrentPassword,
+	CodePasswordIsNotFilled:       ErrMsgPasswordIsNotFilled,
+	CodeResetPasswordTokenInvalid: ErrMsgResetTokenInvalid,
 
 	CodeLockExist:            ErrMsgLockExist,
 	CodeRedisGet:             ErrMsgInternalServerError,

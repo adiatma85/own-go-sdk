@@ -125,4 +125,69 @@ var (
 		BodyEN:     "",
 		BodyID:     "",
 	}
+
+	// Application Specific Messages
+	ErrMsgResetPassword = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Failed To Reset Password",
+		TitleID:    "Gagal Mengatur Ulang Kata Sandi",
+		BodyEN:     "",
+		BodyID:     "",
+	}
+
+	ErrMsgPasswordDoesNotMatch = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Entered Password Does Not Match",
+		TitleID:    "Kata Sandi Yang Dimasukkan Salah",
+		BodyEN:     "",
+		BodyID:     "",
+	}
+
+	ErrMsgResetTokenExpired = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Reset Password Token Has Expired",
+		TitleID:    "Token Atur Ulang Kata Sandi Sudah Kadaluwarsa",
+		BodyEN:     "Please create a new password reset request",
+		BodyID:     "Silakan lakukan permintaan pengaturan ulang kata sandi kembali",
+	}
+
+	ErrMsgEmptyEmail = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Your Email is Empty",
+		TitleID:    "Alamat Email Kosong",
+		BodyEN:     "Please input your email",
+		BodyID:     "Silakan isi email anda",
+	}
+
+	ErrMsgInvalidEmail = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Your Email is Invalid",
+		TitleID:    "Alamat Email Tidak Valid",
+		BodyEN:     "Please input a valid email",
+		BodyID:     "Silakan isi email yang valid",
+	}
+
+	ErrMsgSameCurrentPassword = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Your new password cannot be the same with your current password",
+		TitleID:    "Kata sandi baru anda tidak boleh sama dengan kata sandi saat ini",
+		BodyEN:     "Please input a new password",
+		BodyID:     "Silakan isi password yang baru",
+	}
+
+	ErrMsgPasswordIsNotFilled = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Your new password and new confirmation password must be filled",
+		TitleID:    "Kata sandi baru anda dan konfirmasi kata sandi baru harus diisi",
+		BodyEN:     "Please input a new password and the confirmation password",
+		BodyID:     "Silakan isi password dan konfirmasi password",
+	}
+
+	ErrMsgResetTokenInvalid = Message{
+		StatusCode: http.StatusBadRequest,
+		TitleEN:    "Reset Password Token Is Invalid",
+		TitleID:    "Token Reset Pasword Tidak Valid",
+		BodyEN:     "Please check your token",
+		BodyID:     "Silakan periksa kembali token anda",
+	}
 )
