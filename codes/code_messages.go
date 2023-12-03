@@ -16,6 +16,22 @@ type Message struct {
 
 // HTTP message
 var (
+	// Application Message
+	SuccessDefault = Message{
+		StatusCode: http.StatusOK,
+		TitleEN:    language.HTTPStatusText(language.English, http.StatusOK),
+		TitleID:    language.HTTPStatusText(language.Indonesian, http.StatusOK),
+		BodyEN:     "Request successful",
+		BodyID:     "Request berhasil",
+	}
+	SuccessAccepted = Message{
+		StatusCode: http.StatusAccepted,
+		TitleEN:    language.HTTPStatusText(language.English, http.StatusAccepted),
+		TitleID:    language.HTTPStatusText(language.Indonesian, http.StatusAccepted),
+		BodyEN:     "Request accepted",
+		BodyID:     "Request diterima",
+	}
+
 	// 4xx
 	ErrMsgBadRequest = Message{
 		StatusCode: http.StatusBadRequest,
