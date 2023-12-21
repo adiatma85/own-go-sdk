@@ -1,6 +1,11 @@
 package codes
 
-import "math"
+import (
+	"math"
+
+	"github.com/adiatma85/own-go-sdk/language"
+	"github.com/adiatma85/own-go-sdk/operator"
+)
 
 type Code uint32
 
@@ -210,4 +215,25 @@ var ErrorMessages = AppMessage{
 	CodeCacheLockNotAcquired: ErrMsgInternalServerError,
 	CodeCacheInvalidCastType: ErrMsgInternalServerError,
 	CodeCacheNotFound:        ErrMsgInternalServerError,
+}
+
+var ApplicationMessages = AppMessage{
+	// Other
+	CodeAccepted: SuccessAccepted,
+}
+
+func Compile(code Code, lang string) DisplayMessage {
+	if appMsg, ok := ApplicationMessages[code]; ok {
+		return DisplayMessage{
+			StatusCode: appMsg.StatusCode,
+			Title:      operator.Ternary(lang == language.Indonesian, appMsg.TitleID, appMsg.TitleEN),
+			Body:       operator.Ternary(lang == language.Indonesian, appMsg.BodyID, appMsg.BodyEN),
+		}
+	}
+
+	return DisplayMessage{
+		StatusCode: SuccessDefault.StatusCode,
+		Title:      operator.Ternary(lang == language.Indonesian, SuccessDefault.TitleID, SuccessDefault.TitleEN),
+		Body:       operator.Ternary(lang == language.Indonesian, SuccessDefault.BodyID, SuccessDefault.BodyEN),
+	}
 }
