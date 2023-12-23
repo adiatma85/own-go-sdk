@@ -1,6 +1,6 @@
 My Own SDK
 
-Collection of go libraries and interfaces to be used across all of Delos backend services written in Go.
+Collection of go libraries and interfaces to be used across all of personal backend services written in Go.
 
 ## Installation
 
