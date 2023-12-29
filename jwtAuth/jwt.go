@@ -22,7 +22,7 @@ type Interface interface {
 	CreateRefreshToken(user User) (string, error)
 	ValidateToken(token string) (User, error)
 	SetUserAuthInfo(ctx context.Context, param UserAuthParam) context.Context
-	GetUserAuthInfo(ctx context.Context, param UserAuthParam) (UserAuthInfo, error)
+	GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error)
 }
 
 type Config struct {
@@ -126,7 +126,7 @@ func (j *jsonWebtoken) SetUserAuthInfo(ctx context.Context, param UserAuthParam)
 	return context.WithValue(ctx, userAuthInfo, userauth)
 }
 
-func (j *jsonWebtoken) GetUserAuthInfo(ctx context.Context, param UserAuthParam) (UserAuthInfo, error) {
+func (j *jsonWebtoken) GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error) {
 	user, ok := ctx.Value(userAuthInfo).(UserAuthInfo)
 	if !ok {
 		return user, errors.NewWithCode(codes.CodeAuthFailure, "failed getting user auth info")
