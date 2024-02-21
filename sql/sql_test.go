@@ -9,7 +9,7 @@ import (
 	"github.com/adiatma85/own-go-sdk/instrument"
 	"github.com/adiatma85/own-go-sdk/log"
 	mock_log "github.com/adiatma85/own-go-sdk/tests/mock/log"
-	"github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 func initTestDatabase() Interface {

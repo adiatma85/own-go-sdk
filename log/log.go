@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"runtime/debug"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,6 +28,7 @@ type Interface interface {
 	Warn(ctx context.Context, obj interface{})
 	Error(ctx context.Context, obj interface{})
 	Fatal(ctx context.Context, obj interface{})
+	Panic(obj any)
 }
 
 type Config struct {
@@ -89,6 +92,20 @@ func (l *logger) Fatal(ctx context.Context, obj interface{}) {
 	l.log.Fatal().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
+}
+
+func (l *logger) Panic(obj any) {
+	defer func() { recover() }()
+	l.log.Panic().
+		Fields(getPanicStacktrace()).
+		Msg(fmt.Sprint(getCaller(obj)))
+}
+
+func getPanicStacktrace() map[string]any {
+	errStack := strings.Split(strings.ReplaceAll(string(debug.Stack()), "\t", ""), "\n")
+	return map[string]any{
+		"stracktrace": errStack,
+	}
 }
 
 func getCaller(obj interface{}) interface{} {
