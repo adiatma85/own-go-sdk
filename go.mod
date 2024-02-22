@@ -6,7 +6,6 @@ require (
 	github.com/bsm/redislock v0.7.2
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v5 v5.2.0
-	github.com/golang/mock v1.6.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/json-iterator/go v1.1.12
 	github.com/mitchellh/mapstructure v1.5.0
@@ -14,6 +13,7 @@ require (
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xeipuuv/gojsonschema v1.2.0
+	go.uber.org/mock v0.4.0
 )
 
 require (

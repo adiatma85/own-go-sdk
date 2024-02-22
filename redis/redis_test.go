@@ -13,7 +13,7 @@ import (
 	mock_log "github.com/adiatma85/own-go-sdk/tests/mock/log"
 	"github.com/bsm/redislock"
 	"github.com/go-redis/redis/v8"
-	"github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 func Test_redis_Get(t *testing.T) {

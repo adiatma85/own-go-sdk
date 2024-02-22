@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	mock_log "github.com/adiatma85/own-go-sdk/tests/mock/log"
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 )
 
 type MockFarm struct {
