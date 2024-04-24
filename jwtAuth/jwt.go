@@ -13,8 +13,8 @@ type contextKey string
 
 const (
 	userAuthInfo     contextKey = "UserAuthInfo"
-	AccessTokenType             = "ACCESS_TOKEN"
-	RefreshTokenType            = "REFRESH_TOKEN"
+	AccessTokenType  string     = "ACCESS_TOKEN"
+	RefreshTokenType string     = "REFRESH_TOKEN"
 )
 
 type Interface interface {
@@ -49,7 +49,8 @@ func (j *jsonWebtoken) CreateAccessToken(user User) (string, error) {
 	expirationTime := time.Now().Add(j.cfg.AccessTokenExpLimit)
 
 	claims := &Claim{
-		UserID: user.ID,
+		UserID:    user.ID,
+		TokenType: AccessTokenType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -69,7 +70,8 @@ func (j *jsonWebtoken) CreateRefreshToken(user User) (string, error) {
 	expirationTime := time.Now().Add(j.cfg.RefreshTokenExpLimit)
 
 	claims := &Claim{
-		UserID: user.ID,
+		UserID:    user.ID,
+		TokenType: RefreshTokenType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
