@@ -21,7 +21,7 @@ type Interface interface {
 	CreateAccessToken(user User) (string, error)
 	CreateRefreshToken(user User) (string, error)
 	ValidateAccessToken(token string) (User, error)
-	ValidateRefreshTOken(token string) (User, error)
+	ValidateRefreshToken(token string) (User, error)
 	SetUserAuthInfo(ctx context.Context, param UserAuthParam) context.Context
 	GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error)
 }
@@ -101,7 +101,7 @@ func (j *jsonWebtoken) ValidateAccessToken(token string) (User, error) {
 	return user, nil
 }
 
-func (j *jsonWebtoken) ValidateRefreshTOken(token string) (User, error) {
+func (j *jsonWebtoken) ValidateRefreshToken(token string) (User, error) {
 	user, claim, err := j.validateToken(token)
 	if err != nil {
 		return user, err
