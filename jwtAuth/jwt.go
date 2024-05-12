@@ -20,7 +20,8 @@ const (
 type Interface interface {
 	CreateAccessToken(user User) (string, error)
 	CreateRefreshToken(user User) (string, error)
-	ValidateToken(token string) (User, error)
+	ValidateAccessToken(token string) (User, error)
+	ValidateRefreshTOken(token string) (User, error)
 	SetUserAuthInfo(ctx context.Context, param UserAuthParam) context.Context
 	GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error)
 }
@@ -87,7 +88,33 @@ func (j *jsonWebtoken) CreateRefreshToken(user User) (string, error) {
 	return tokenString, nil
 }
 
-func (j *jsonWebtoken) ValidateToken(token string) (User, error) {
+func (j *jsonWebtoken) ValidateAccessToken(token string) (User, error) {
+	user, claim, err := j.validateToken(token)
+	if err != nil {
+		return user, err
+	}
+
+	if claim.TokenType != AccessTokenType {
+		return user, errors.NewWithCode(codes.CodeInvalidAccessToken, "invalid token type")
+	}
+
+	return user, nil
+}
+
+func (j *jsonWebtoken) ValidateRefreshTOken(token string) (User, error) {
+	user, claim, err := j.validateToken(token)
+	if err != nil {
+		return user, err
+	}
+
+	if claim.TokenType != RefreshTokenType {
+		return user, errors.NewWithCode(codes.CodeInvalidRefreshToken, "invalid token type")
+	}
+
+	return user, nil
+}
+
+func (j *jsonWebtoken) validateToken(token string) (User, Claim, error) {
 	var (
 		codeError    codes.Code
 		errorMessage string
@@ -99,7 +126,7 @@ func (j *jsonWebtoken) ValidateToken(token string) (User, error) {
 		return j.cfg.secretByte, nil
 	})
 	if err != nil {
-		return user, err
+		return user, Claim{}, err
 	}
 
 	switch claim.TokenType {
@@ -112,13 +139,13 @@ func (j *jsonWebtoken) ValidateToken(token string) (User, error) {
 	}
 
 	if !parsedToken.Valid {
-		return user, errors.NewWithCode(codeError, errorMessage)
+		return user, Claim{}, errors.NewWithCode(codeError, errorMessage)
 	}
 
 	// If anything else is valid
 	user.ID = claim.UserID
 
-	return user, nil
+	return user, claim, nil
 }
 
 func (j *jsonWebtoken) SetUserAuthInfo(ctx context.Context, param UserAuthParam) context.Context {
