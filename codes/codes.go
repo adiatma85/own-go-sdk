@@ -88,6 +88,8 @@ const (
 	CodeAuthInvalidToken
 	CodeForbidden
 	CodeAuthRevokeRefreshTokenFailed
+	CodeInvalidAccessToken
+	CodeInvalidRefreshToken
 )
 
 const (
