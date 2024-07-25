@@ -23,3 +23,4 @@ mock-all:
 	@make mock util=redis subutil=redis
 	@make mock util=parser subutil=parser
 	@make mock util=parser subutil=json
+	@make mock util=jwtAuth subutil=jwt
