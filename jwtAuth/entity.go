@@ -4,6 +4,7 @@ import "github.com/golang-jwt/jwt/v5"
 
 type User struct {
 	ID       int64  `db:"id" json:"id"`
+	RoleID   int64  `db:"fk_role_id" json:"roleID"`
 	Username string `db:"username" json:"username"`
 	Email    string `db:"email" json:"email"`
 }
