@@ -16,7 +16,8 @@ import (
 var ErrNotObtained = redislock.ErrNotObtained
 
 const (
-	Nil = redis.Nil
+	Nil         = redis.Nil
+	MaximalScan = 100
 )
 
 type Locker *redislock.Lock
@@ -31,6 +32,11 @@ type Interface interface {
 	FlushAllAsync(ctx context.Context) error
 	FlushDB(ctx context.Context) error
 	FlushDBAsync(ctx context.Context) error
+	Increment(ctx context.Context, key string) error
+	IncrementBy(ctx context.Context, key string, increasingFactor int64) error
+	Decrement(ctx context.Context, key string) error
+	DecrementBy(ctx context.Context, key string, decreasingFactor int64) error
+	Scan(ctx context.Context, key string) ([]string, error)
 }
 
 type TLSConfig struct {
@@ -169,4 +175,41 @@ func (c *cache) FlushDB(ctx context.Context) error {
 
 func (c *cache) FlushDBAsync(ctx context.Context) error {
 	return c.rdb.FlushDBAsync(ctx).Err()
+}
+
+func (c *cache) Increment(ctx context.Context, key string) error {
+	return c.IncrementBy(ctx, key, 1)
+}
+
+func (c *cache) IncrementBy(ctx context.Context, key string, increasingFactor int64) error {
+	return c.rdb.IncrBy(ctx, key, increasingFactor).Err()
+}
+
+func (c *cache) Decrement(ctx context.Context, key string) error {
+	return c.DecrementBy(ctx, key, 1)
+}
+
+func (c *cache) DecrementBy(ctx context.Context, key string, decreasingFactor int64) error {
+	return c.rdb.DecrBy(ctx, key, decreasingFactor).Err()
+}
+
+func (c *cache) Scan(ctx context.Context, key string) ([]string, error) {
+	var cursor uint64
+	result := []string{}
+
+	for {
+		items, cursor, err := c.rdb.Scan(ctx, cursor, key, MaximalScan).Result()
+		if err != nil {
+			return result, err
+		}
+
+		// Append the Result
+		result = append(result, items...)
+
+		if cursor < 1 {
+			break
+		}
+	}
+
+	return result, nil
 }

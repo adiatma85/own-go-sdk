@@ -138,6 +138,11 @@ const (
 	CodeCacheNotFound
 )
 
+const (
+	// Scheduler Running Error
+	CodeSchedulerRunningError = Code(iota + 4000)
+)
+
 // Error messages only
 var ErrorMessages = AppMessage{
 	CodeInvalidValue:            ErrMsgBadRequest,
@@ -217,6 +222,8 @@ var ErrorMessages = AppMessage{
 	CodeCacheLockNotAcquired: ErrMsgInternalServerError,
 	CodeCacheInvalidCastType: ErrMsgInternalServerError,
 	CodeCacheNotFound:        ErrMsgInternalServerError,
+
+	CodeSchedulerRunningError: ErrMsgInternalServerError,
 }
 
 var ApplicationMessages = AppMessage{
