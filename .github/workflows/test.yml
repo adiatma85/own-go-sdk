@@ -27,6 +27,7 @@ jobs:
         run: make run-tests-report
       
       - name: Discord notification
+        if: failure()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: ${{ secrets.DISCORD_USERNAME }}
