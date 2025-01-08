@@ -5,11 +5,14 @@ go 1.21
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/bsm/redislock v0.7.2
+	github.com/fatih/color v1.14.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/json-iterator/go v1.1.12
 	github.com/mitchellh/mapstructure v1.5.0
+	github.com/nwidger/jsoncolor v0.3.2
+	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/prometheus/client_golang v1.17.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
@@ -76,7 +79,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.18.0
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect

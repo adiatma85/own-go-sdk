@@ -15,80 +15,117 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const (
+	OutputTypeConsole = "console"
+	OutputTypeJson    = "json"
+	OutputTypePretty  = "pretty"
+)
+
 var once = sync.Once{}
 var now = time.Now
 
-type contextKey string
-
 type Interface interface {
 	// TODO add Debugf
-	Trace(ctx context.Context, obj interface{})
-	Debug(ctx context.Context, obj interface{})
-	Info(ctx context.Context, obj interface{})
-	Warn(ctx context.Context, obj interface{})
-	Error(ctx context.Context, obj interface{})
-	Fatal(ctx context.Context, obj interface{})
+	Trace(ctx context.Context, obj any)
+	Debug(ctx context.Context, obj any)
+	Info(ctx context.Context, obj any)
+	Warn(ctx context.Context, obj any)
+	Error(ctx context.Context, obj any)
+	Fatal(ctx context.Context, obj any)
 	Panic(obj any)
 }
 
 type Config struct {
-	Level string
+	Level  string
+	Output string
 }
 
 type logger struct {
 	log zerolog.Logger
 }
 
+func DefaultLogger() Interface {
+	return &logger{
+		log: zerolog.New(os.Stdout).
+			With().
+			Timestamp().
+			CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+			Logger().
+			Level(zerolog.DebugLevel),
+	}
+}
+
 func Init(cfg Config) Interface {
 	var zeroLogging zerolog.Logger
+
 	once.Do(func() {
 		level, err := zerolog.ParseLevel(cfg.Level)
 		if err != nil {
 			log.Fatal().Msg(fmt.Sprintf("failed to parse error level with err: %v", err))
 		}
 
-		zeroLogging = zerolog.New(os.Stdout).
-			With().
-			Timestamp().
-			CallerWithSkipFrameCount(3). //Hard code to 3 for now.
-			Logger().
-			Level(level)
+		switch cfg.Output {
+		case OutputTypeConsole:
+			consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+			zeroLogging = zerolog.New(consoleWriter).
+				With().
+				Timestamp().
+				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+				Logger().
+				Level(level)
+		case OutputTypePretty:
+			prettyWriter := PrettyConsoleWriter{Out: os.Stderr}
+			zeroLogging = zerolog.New(prettyWriter).
+				With().
+				Timestamp().
+				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+				Logger().
+				Level(level)
+		default:
+			zeroLogging = zerolog.New(os.Stdout).
+				With().
+				Timestamp().
+				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+				Logger().
+				Level(level)
+		}
+
 	})
 
 	return &logger{log: zeroLogging}
 }
 
-func (l *logger) Trace(ctx context.Context, obj interface{}) {
+func (l *logger) Trace(ctx context.Context, obj any) {
 	l.log.Trace().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
 }
 
-func (l *logger) Debug(ctx context.Context, obj interface{}) {
+func (l *logger) Debug(ctx context.Context, obj any) {
 	l.log.Debug().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
 }
 
-func (l *logger) Info(ctx context.Context, obj interface{}) {
+func (l *logger) Info(ctx context.Context, obj any) {
 	l.log.Info().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
 }
 
-func (l *logger) Warn(ctx context.Context, obj interface{}) {
+func (l *logger) Warn(ctx context.Context, obj any) {
 	l.log.Warn().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
 }
 
-func (l *logger) Error(ctx context.Context, obj interface{}) {
+func (l *logger) Error(ctx context.Context, obj any) {
 	l.log.Error().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
 }
 
-func (l *logger) Fatal(ctx context.Context, obj interface{}) {
+func (l *logger) Fatal(ctx context.Context, obj any) {
 	l.log.Fatal().
 		Fields(getContextFields(ctx)).
 		Msg(fmt.Sprint(getCaller(obj)))
@@ -108,7 +145,7 @@ func getPanicStacktrace() map[string]any {
 	}
 }
 
-func getCaller(obj interface{}) interface{} {
+func getCaller(obj any) any {
 	switch tr := obj.(type) {
 	case error:
 		file, line, msg, err := errors.GetCaller(tr)
@@ -124,7 +161,7 @@ func getCaller(obj interface{}) interface{} {
 	return obj
 }
 
-func getContextFields(ctx context.Context) map[string]interface{} {
+func getContextFields(ctx context.Context) map[string]any {
 	reqstart := appcontext.GetRequestStartTime(ctx)
 	apprespcode := appcontext.GetAppResponseCode(ctx)
 	appErrMsg := appcontext.GetAppErrorMessage(ctx)
