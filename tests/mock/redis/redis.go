@@ -42,11 +42,12 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 }
 
 // Decrement mocks base method.
-func (m *MockInterface) Decrement(ctx context.Context, key string) error {
+func (m *MockInterface) Decrement(ctx context.Context, key string) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Decrement", ctx, key)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Decrement indicates an expected call of Decrement.
@@ -56,11 +57,12 @@ func (mr *MockInterfaceMockRecorder) Decrement(ctx, key any) *gomock.Call {
 }
 
 // DecrementBy mocks base method.
-func (m *MockInterface) DecrementBy(ctx context.Context, key string, decreasingFactor int64) error {
+func (m *MockInterface) DecrementBy(ctx context.Context, key string, decreasingFactor int64) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DecrementBy", ctx, key, decreasingFactor)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DecrementBy indicates an expected call of DecrementBy.
@@ -155,11 +157,12 @@ func (mr *MockInterfaceMockRecorder) Get(ctx, key any) *gomock.Call {
 }
 
 // Increment mocks base method.
-func (m *MockInterface) Increment(ctx context.Context, key string) error {
+func (m *MockInterface) Increment(ctx context.Context, key string) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Increment", ctx, key)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Increment indicates an expected call of Increment.
@@ -169,11 +172,12 @@ func (mr *MockInterfaceMockRecorder) Increment(ctx, key any) *gomock.Call {
 }
 
 // IncrementBy mocks base method.
-func (m *MockInterface) IncrementBy(ctx context.Context, key string, increasingFactor int64) error {
+func (m *MockInterface) IncrementBy(ctx context.Context, key string, increasingFactor int64) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IncrementBy", ctx, key, increasingFactor)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // IncrementBy indicates an expected call of IncrementBy.
