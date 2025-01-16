@@ -120,6 +120,7 @@ const (
 	// Redis Cache Error
 	CodeRedisGet = Code(iota + 3900)
 	CodeRedisSetex
+	CodeRedisIncrement
 	CodeFailedLock
 	CodeFailedReleaseLock
 	CodeLockExist
@@ -136,6 +137,12 @@ const (
 	CodeCacheLockNotAcquired
 	CodeCacheInvalidCastType
 	CodeCacheNotFound
+	CodeRedisIncr
+	CodeRedisDecr
+	CodeRedisHSet
+	CodeRedisHGet
+	CodeRedisScan
+	CodeRedisDelete
 )
 
 const (

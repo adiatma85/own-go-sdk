@@ -41,34 +41,6 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Decrement mocks base method.
-func (m *MockInterface) Decrement(ctx context.Context, key string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Decrement", ctx, key)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Decrement indicates an expected call of Decrement.
-func (mr *MockInterfaceMockRecorder) Decrement(ctx, key any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Decrement", reflect.TypeOf((*MockInterface)(nil).Decrement), ctx, key)
-}
-
-// DecrementBy mocks base method.
-func (m *MockInterface) DecrementBy(ctx context.Context, key string, decreasingFactor int64) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DecrementBy", ctx, key, decreasingFactor)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DecrementBy indicates an expected call of DecrementBy.
-func (mr *MockInterfaceMockRecorder) DecrementBy(ctx, key, decreasingFactor any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DecrementBy", reflect.TypeOf((*MockInterface)(nil).DecrementBy), ctx, key, decreasingFactor)
-}
-
 // Del mocks base method.
 func (m *MockInterface) Del(ctx context.Context, key string) error {
 	m.ctrl.T.Helper()
@@ -152,34 +124,6 @@ func (m *MockInterface) Get(ctx context.Context, key string) (string, error) {
 func (mr *MockInterfaceMockRecorder) Get(ctx, key any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockInterface)(nil).Get), ctx, key)
-}
-
-// Increment mocks base method.
-func (m *MockInterface) Increment(ctx context.Context, key string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Increment", ctx, key)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Increment indicates an expected call of Increment.
-func (mr *MockInterfaceMockRecorder) Increment(ctx, key any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Increment", reflect.TypeOf((*MockInterface)(nil).Increment), ctx, key)
-}
-
-// IncrementBy mocks base method.
-func (m *MockInterface) IncrementBy(ctx context.Context, key string, increasingFactor int64) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IncrementBy", ctx, key, increasingFactor)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// IncrementBy indicates an expected call of IncrementBy.
-func (mr *MockInterfaceMockRecorder) IncrementBy(ctx, key, increasingFactor any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IncrementBy", reflect.TypeOf((*MockInterface)(nil).IncrementBy), ctx, key, increasingFactor)
 }
 
 // Lock mocks base method.

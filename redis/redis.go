@@ -32,10 +32,10 @@ type Interface interface {
 	FlushAllAsync(ctx context.Context) error
 	FlushDB(ctx context.Context) error
 	FlushDBAsync(ctx context.Context) error
-	Increment(ctx context.Context, key string) error
-	IncrementBy(ctx context.Context, key string, increasingFactor int64) error
-	Decrement(ctx context.Context, key string) error
-	DecrementBy(ctx context.Context, key string, decreasingFactor int64) error
+	// Increment(ctx context.Context, key string) error
+	// IncrementBy(ctx context.Context, key string, increasingFactor int64) error
+	// Decrement(ctx context.Context, key string) error
+	// DecrementBy(ctx context.Context, key string, decreasingFactor int64) error
 	Scan(ctx context.Context, key string) ([]string, error)
 }
 
@@ -177,20 +177,30 @@ func (c *cache) FlushDBAsync(ctx context.Context) error {
 	return c.rdb.FlushDBAsync(ctx).Err()
 }
 
-func (c *cache) Increment(ctx context.Context, key string) error {
+func (c *cache) Increment(ctx context.Context, key string) (int64, error) {
 	return c.IncrementBy(ctx, key, 1)
 }
 
-func (c *cache) IncrementBy(ctx context.Context, key string, increasingFactor int64) error {
-	return c.rdb.IncrBy(ctx, key, increasingFactor).Err()
+func (c *cache) IncrementBy(ctx context.Context, key string, increasingFactor int64) (int64, error) {
+	res, err := c.rdb.IncrBy(ctx, key, increasingFactor).Result()
+	if err != nil {
+		return res, errors.NewWithCode(codes.CodeRedisIncrement, err.Error())
+	}
+
+	return res, nil
 }
 
-func (c *cache) Decrement(ctx context.Context, key string) error {
+func (c *cache) Decrement(ctx context.Context, key string) (int64, error) {
 	return c.DecrementBy(ctx, key, 1)
 }
 
-func (c *cache) DecrementBy(ctx context.Context, key string, decreasingFactor int64) error {
-	return c.rdb.DecrBy(ctx, key, decreasingFactor).Err()
+func (c *cache) DecrementBy(ctx context.Context, key string, decreasingFactor int64) (int64, error) {
+	res, err := c.rdb.DecrBy(ctx, key, decreasingFactor).Result()
+	if err != nil {
+		return res, errors.NewWithCode(codes.CodeRedisIncrement, err.Error())
+	}
+
+	return res, nil
 }
 
 func (c *cache) Scan(ctx context.Context, key string) ([]string, error) {
