@@ -32,10 +32,10 @@ type Interface interface {
 	FlushAllAsync(ctx context.Context) error
 	FlushDB(ctx context.Context) error
 	FlushDBAsync(ctx context.Context) error
-	// Increment(ctx context.Context, key string) error
-	// IncrementBy(ctx context.Context, key string, increasingFactor int64) error
-	// Decrement(ctx context.Context, key string) error
-	// DecrementBy(ctx context.Context, key string, decreasingFactor int64) error
+	Increment(ctx context.Context, key string) (int64, error)
+	IncrementBy(ctx context.Context, key string, increasingFactor int64) (int64, error)
+	Decrement(ctx context.Context, key string) (int64, error)
+	DecrementBy(ctx context.Context, key string, decreasingFactor int64) (int64, error)
 	Scan(ctx context.Context, key string) ([]string, error)
 }
 
