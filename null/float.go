@@ -6,6 +6,9 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"reflect"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // nullable float64 type.
@@ -58,7 +61,33 @@ func (f *Float64) MarshalJSON() ([]byte, error) {
 	return json.Marshal(f.Float64)
 }
 
+func (f Float64) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !f.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	return bson.MarshalValue(f.Float64)
+}
+
 func (f *Float64) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	err := json.Unmarshal(b, &f.Float64)
+	f.Valid = (err == nil)
+	return err
+}
+
+func (f *Float64) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	err := bson.UnmarshalValue(t, b, &f.Float64)
+	f.Valid = (err == nil)
+	return err
+}
+
+func (f *Float64) UnmarshalText(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
 	}
@@ -80,4 +109,8 @@ func (f Float64) Equal(other Float64) bool {
 // returns true if valid and both have same value
 func (f Float64) Is(other float64) bool {
 	return f.Equal(Float64From(other))
+}
+
+func (f Float64) IsZero() bool {
+	return !f.Valid
 }

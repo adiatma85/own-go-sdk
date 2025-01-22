@@ -6,6 +6,9 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"reflect"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 var nullBytes = []byte("null")
@@ -59,7 +62,33 @@ func (bo *Bool) MarshalJSON() ([]byte, error) {
 	return json.Marshal(bo.Bool)
 }
 
+func (bo Bool) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !bo.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	return bson.MarshalValue(bo.Bool)
+}
+
 func (bo *Bool) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	err := json.Unmarshal(b, &bo.Bool)
+	bo.Valid = (err == nil)
+	return err
+}
+
+func (bo *Bool) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	err := bson.UnmarshalValue(t, b, &bo.Bool)
+	bo.Valid = (err == nil)
+	return err
+}
+
+func (bo *Bool) UnmarshalText(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
 	}
@@ -81,4 +110,8 @@ func (bo Bool) Equal(other Bool) bool {
 // returns true if valid and both have same value
 func (bo Bool) Is(other bool) bool {
 	return bo.Equal(BoolFrom(other))
+}
+
+func (bo Bool) IsZero() bool {
+	return !bo.Valid
 }

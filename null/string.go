@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"reflect"
 	"strings"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // nullable string type.
@@ -61,6 +64,13 @@ func (s *String) MarshalJSON() ([]byte, error) {
 	return json.Marshal(s.String)
 }
 
+func (s String) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !s.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	return bson.MarshalValue(s.String)
+}
+
 func (s *String) UnmarshalJSON(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
@@ -69,6 +79,26 @@ func (s *String) UnmarshalJSON(b []byte) error {
 	s.String = strings.TrimSpace(s.String)
 	s.Valid = (err == nil)
 	return err
+}
+
+func (s *String) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	err := bson.UnmarshalValue(t, b, &s.String)
+	s.String = strings.TrimSpace(s.String)
+	s.Valid = (err == nil)
+	return err
+}
+
+func (s *String) UnmarshalText(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	s.String = strings.TrimSpace(string(b))
+	s.Valid = (s.String != "")
+	return nil
 }
 
 // will return true if invalid or value is empty
@@ -84,4 +114,8 @@ func (s String) Equal(other String) bool {
 // returns true if valid and both have same value
 func (s String) Is(other string) bool {
 	return s.Equal(StringFrom(other))
+}
+
+func (s String) IsZero() bool {
+	return !s.Valid
 }

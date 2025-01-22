@@ -491,6 +491,7 @@ func TestTime_IsAfter(t *testing.T) {
 
 func TestNewDate(t *testing.T) {
 	mockTime := time.Now()
+	mockTimeResponse := time.Date(mockTime.Year(), mockTime.Month(), mockTime.Day(), 0, 0, 0, 0, mockTime.Location())
 	type args struct {
 		t     time.Time
 		valid bool
@@ -506,7 +507,7 @@ func TestNewDate(t *testing.T) {
 				t:     mockTime,
 				valid: false,
 			},
-			want: Date{Valid: false, Time: mockTime},
+			want: Date{Valid: false, Time: mockTimeResponse},
 		},
 		{
 			name: "set valid",
@@ -514,7 +515,7 @@ func TestNewDate(t *testing.T) {
 				t:     mockTime,
 				valid: true,
 			},
-			want: Date{Valid: true, Time: mockTime},
+			want: Date{Valid: true, Time: mockTimeResponse},
 		},
 	}
 	for _, tt := range tests {
@@ -527,6 +528,7 @@ func TestNewDate(t *testing.T) {
 
 func TestDateFrom(t *testing.T) {
 	mockTime := time.Now()
+	mockTimeResponse := time.Date(mockTime.Year(), mockTime.Month(), mockTime.Day(), 0, 0, 0, 0, mockTime.Location())
 	type args struct {
 		t time.Time
 	}
@@ -543,7 +545,7 @@ func TestDateFrom(t *testing.T) {
 		{
 			name: "valid time",
 			args: args{t: mockTime},
-			want: Date{Valid: true, Time: mockTime},
+			want: Date{Valid: true, Time: mockTimeResponse},
 		},
 	}
 	for _, tt := range tests {
@@ -626,6 +628,7 @@ func TestDate_Scan(t *testing.T) {
 
 func TestDate_Value(t *testing.T) {
 	mockTime := time.Now()
+	mockTimeResponse := time.Date(mockTime.Year(), mockTime.Month(), mockTime.Day(), 0, 0, 0, 0, mockTime.Location())
 	tests := []struct {
 		name    string
 		fields  Date
@@ -647,7 +650,7 @@ func TestDate_Value(t *testing.T) {
 			name:    "value of int",
 			fields:  Date{Valid: true, Time: mockTime},
 			wantErr: false,
-			want:    mockTime,
+			want:    mockTimeResponse,
 		},
 	}
 	for _, tt := range tests {
