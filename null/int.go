@@ -6,14 +6,19 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"reflect"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // nullable int64 type.
 // null will set valid value to false.
 // any int64 value will be considered null when valid is set to false
+// SqlNull is for updating SQL DB value to null
 type Int64 struct {
-	Int64 int64
-	Valid bool
+	Int64   int64
+	Valid   bool
+	SqlNull bool
 }
 
 // create new nullable int64
@@ -36,9 +41,9 @@ func (i *Int64) Scan(value interface{}) error {
 	}
 
 	if reflect.TypeOf(value) == nil {
-		*i = Int64{sqli.Int64, false}
+		*i = Int64{sqli.Int64, false, false}
 	} else {
-		*i = Int64{sqli.Int64, true}
+		*i = Int64{sqli.Int64, true, false}
 	}
 	return nil
 }
@@ -57,7 +62,33 @@ func (i *Int64) MarshalJSON() ([]byte, error) {
 	return json.Marshal(i.Int64)
 }
 
+func (i Int64) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !i.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	return bson.MarshalValue(i.Int64)
+}
+
 func (i *Int64) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	err := json.Unmarshal(b, &i.Int64)
+	i.Valid = (err == nil)
+	return err
+}
+
+func (i *Int64) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	err := bson.UnmarshalValue(t, b, &i.Int64)
+	i.Valid = (err == nil)
+	return err
+}
+
+func (i *Int64) UnmarshalText(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
 	}
@@ -79,4 +110,8 @@ func (i Int64) Equal(other Int64) bool {
 // returns true if valid and both have same value
 func (i Int64) Is(other int64) bool {
 	return i.Equal(Int64From(other))
+}
+
+func (i Int64) IsZero() bool {
+	return !i.Valid
 }

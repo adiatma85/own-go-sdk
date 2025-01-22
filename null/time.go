@@ -4,10 +4,14 @@ import (
 	"bytes"
 	"database/sql"
 	"database/sql/driver"
+	"encoding/binary"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // nullable time.Time type.
@@ -63,7 +67,45 @@ func (t *Time) MarshalJSON() ([]byte, error) {
 	return []byte(val), nil
 }
 
+func (nt Time) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !nt.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	return bson.MarshalValue(nt.Time)
+}
+
 func (nt *Time) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	s := string(b)
+	s = strings.Replace(s, "\"", "", -1)
+
+	x, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		nt.Valid = false
+		return err
+	}
+
+	nt.Time = x
+	nt.Valid = true
+	return nil
+}
+
+func (nt *Time) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	ms := int64(binary.LittleEndian.Uint64(b))
+	x := time.Unix(ms/1000, (ms%1000)*1000000).UTC()
+
+	nt.Time = x
+	nt.Valid = true
+	return nil
+}
+
+func (nt *Time) UnmarshalText(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
 	}
@@ -98,12 +140,16 @@ func (t Time) Is(other time.Time) bool {
 
 // return true if valid and the argument is before the origin
 func (t Time) IsBefore(other time.Time) bool {
-	return t.Valid == true && other.Before(t.Time)
+	return t.Valid && other.Before(t.Time)
 }
 
 // return true if valid and the argument is after the origin
 func (t Time) IsAfter(other time.Time) bool {
-	return t.Valid == true && other.After(t.Time)
+	return t.Valid && other.After(t.Time)
+}
+
+func (t Time) IsZero() bool {
+	return !t.Valid
 }
 
 // Date is nullable time.Time for parsing DATE type in SQL to golang time.Time.
@@ -117,7 +163,7 @@ type Date struct {
 // create new nullable time.time
 func NewDate(t time.Time, valid bool) Date {
 	return Date{
-		Time:  t,
+		Time:  convertTimeToZero(t),
 		Valid: valid,
 	}
 }
@@ -157,7 +203,7 @@ func (d Date) Value() (driver.Value, error) {
 	if !d.Valid {
 		return nil, nil
 	}
-	return d.Time, nil
+	return convertTimeToZero(d.Time), nil
 }
 
 func (d *Date) MarshalJSON() ([]byte, error) {
@@ -169,7 +215,50 @@ func (d *Date) MarshalJSON() ([]byte, error) {
 	return []byte(val), nil
 }
 
+func (d Date) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	if !d.Valid {
+		return bson.TypeNull, nil, nil
+	}
+	d.Time = time.Date(d.Time.Year(), d.Time.Month(), d.Time.Day(), 0, 0, 0, 0, d.Time.Location())
+	return bson.MarshalValue(d.Time)
+}
+
 func (d *Date) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, nullBytes) {
+		return nil
+	}
+	s := string(b)
+	s = strings.Replace(s, "\"", "", -1)
+
+	x, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		d.Valid = false
+		return err
+	}
+
+	x = time.Date(x.Year(), x.Month(), x.Day(), 0, 0, 0, 0, x.Location())
+
+	d.Time = x
+	d.Valid = true
+	return nil
+}
+
+func (d *Date) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	if t == bson.TypeNull {
+		return nil
+	}
+
+	ms := int64(binary.LittleEndian.Uint64(b))
+	x := time.Unix(ms/1000, (ms%1000)*1000000).UTC()
+
+	x = time.Date(x.Year(), x.Month(), x.Day(), 0, 0, 0, 0, x.Location())
+
+	d.Time = x
+	d.Valid = true
+	return nil
+}
+
+func (d *Date) UnmarshalText(b []byte) error {
 	if bytes.Equal(b, nullBytes) {
 		return nil
 	}
@@ -206,10 +295,18 @@ func (d Date) Is(other time.Time) bool {
 
 // return true if valid and the argument is before the origin
 func (d Date) IsBefore(other time.Time) bool {
-	return d.Valid == true && other.Before(d.Time)
+	return d.Valid && other.Before(d.Time)
 }
 
 // return true if valid and the argument is after the origin
 func (d Date) IsAfter(other time.Time) bool {
-	return d.Valid == true && other.After(d.Time)
+	return d.Valid && other.After(d.Time)
+}
+
+func convertTimeToZero(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+}
+
+func (d Date) IsZero() bool {
+	return !d.Valid
 }
