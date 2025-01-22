@@ -24,3 +24,5 @@ mock-all:
 	@make mock util=parser subutil=parser
 	@make mock util=parser subutil=json
 	@make mock util=jwtAuth subutil=jwt
+	@make mock util=mongo subutil=mongo
+	@make mock util=mongo subutil=mongo_monitor
