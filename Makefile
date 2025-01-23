@@ -26,3 +26,4 @@ mock-all:
 	@make mock util=jwtAuth subutil=jwt
 	@make mock util=mongo subutil=mongo
 	@make mock util=mongo subutil=mongo_monitor
+	@make mock util=timelib subutil=timelib
