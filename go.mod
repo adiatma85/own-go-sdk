@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/bsm/redislock v0.7.2
+	github.com/bsm/redislock v0.9.4
 	github.com/fatih/color v1.14.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt/v5 v5.2.0
@@ -14,6 +14,7 @@ require (
 	github.com/nwidger/jsoncolor v0.3.2
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/prometheus/client_golang v1.17.0
+	github.com/redis/go-redis/v9 v9.7.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xeipuuv/gojsonschema v1.2.0

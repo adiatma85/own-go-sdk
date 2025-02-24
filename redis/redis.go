@@ -10,7 +10,7 @@ import (
 	"github.com/adiatma85/own-go-sdk/errors"
 	"github.com/adiatma85/own-go-sdk/log"
 	"github.com/bsm/redislock"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 var ErrNotObtained = redislock.ErrNotObtained
@@ -37,6 +37,9 @@ type Interface interface {
 	Decrement(ctx context.Context, key string) (int64, error)
 	DecrementBy(ctx context.Context, key string, decreasingFactor int64) (int64, error)
 	Scan(ctx context.Context, key string) ([]string, error)
+
+	// Return the client
+	GetClient() *redis.Client
 }
 
 type TLSConfig struct {
@@ -111,7 +114,7 @@ func (c *cache) SetEX(ctx context.Context, key string, val string, expTime time.
 		expTime = c.conf.DefaultTTL
 	}
 
-	err := c.rdb.SetEX(ctx, key, val, expTime).Err()
+	err := c.rdb.SetEx(ctx, key, val, expTime).Err()
 	if err != nil {
 		return errors.NewWithCode(codes.CodeRedisSetex, err.Error())
 	}
@@ -222,4 +225,8 @@ func (c *cache) Scan(ctx context.Context, key string) ([]string, error) {
 	}
 
 	return result, nil
+}
+
+func (c *cache) GetClient() *redis.Client {
+	return c.rdb
 }
