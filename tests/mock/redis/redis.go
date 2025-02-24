@@ -15,6 +15,7 @@ import (
 	time "time"
 
 	redislock "github.com/bsm/redislock"
+	redis "github.com/go-redis/redis/v8"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -154,6 +155,20 @@ func (m *MockInterface) Get(ctx context.Context, key string) (string, error) {
 func (mr *MockInterfaceMockRecorder) Get(ctx, key any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockInterface)(nil).Get), ctx, key)
+}
+
+// GetClient mocks base method.
+func (m *MockInterface) GetClient() *redis.Client {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetClient")
+	ret0, _ := ret[0].(*redis.Client)
+	return ret0
+}
+
+// GetClient indicates an expected call of GetClient.
+func (mr *MockInterfaceMockRecorder) GetClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClient", reflect.TypeOf((*MockInterface)(nil).GetClient))
 }
 
 // Increment mocks base method.
