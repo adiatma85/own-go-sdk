@@ -11,6 +11,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/json-iterator/go v1.1.12
 	github.com/mitchellh/mapstructure v1.5.0
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/nwidger/jsoncolor v0.3.2
 	github.com/olekukonko/ts v0.0.0-20171002115256-78ecb04241c0
 	github.com/prometheus/client_golang v1.17.0
@@ -60,6 +61,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20230913181813-007df8e322eb // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect
 	google.golang.org/grpc v1.58.3 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 )
 
 require (
