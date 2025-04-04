@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"runtime/debug"
 	"strings"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/adiatma85/own-go-sdk/appcontext"
 	"github.com/adiatma85/own-go-sdk/errors"
+	"github.com/natefinch/lumberjack"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -19,6 +21,7 @@ const (
 	OutputTypeConsole = "console"
 	OutputTypeJson    = "json"
 	OutputTypePretty  = "pretty"
+	OutputLogFile     = "file"
 )
 
 var once = sync.Once{}
@@ -38,6 +41,18 @@ type Interface interface {
 type Config struct {
 	Level  string
 	Output string
+
+	// Specific to file output
+	LumberjackConfig LumberjackConfig
+}
+
+// Lumberjack config for the lumberjack logger file rotation
+type LumberjackConfig struct {
+	Filename   string
+	MaxSizeMB  int
+	MaxBackups int
+	MaxAge     int
+	Compress   bool
 }
 
 type logger struct {
@@ -76,6 +91,27 @@ func Init(cfg Config) Interface {
 		case OutputTypePretty:
 			prettyWriter := PrettyConsoleWriter{Out: os.Stderr}
 			zeroLogging = zerolog.New(prettyWriter).
+				With().
+				Timestamp().
+				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+				Logger().
+				Level(level)
+		case OutputLogFile:
+			if cfg.LumberjackConfig.Filename == "" {
+				log.Fatal().Msg("Lumberjack filename is required for file output")
+				return
+			}
+
+			logFile := &lumberjack.Logger{
+				Filename:   cfg.LumberjackConfig.Filename,
+				MaxSize:    cfg.LumberjackConfig.MaxSizeMB,
+				MaxBackups: cfg.LumberjackConfig.MaxBackups,
+				MaxAge:     cfg.LumberjackConfig.MaxAge,
+				Compress:   cfg.LumberjackConfig.Compress,
+			}
+
+			multiWriter := io.MultiWriter(os.Stdout, logFile)
+			zeroLogging = zerolog.New(multiWriter).
 				With().
 				Timestamp().
 				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
