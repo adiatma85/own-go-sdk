@@ -103,11 +103,11 @@ func Init(cfg Config) Interface {
 			}
 
 			logFile := &lumberjack.Logger{
-				Filename:   cfg.LumberjackConfig.Filename,   // Log file name
-				MaxSize:    cfg.LumberjackConfig.MaxSizeMB,  // Max size in MB before rotation
-				MaxBackups: cfg.LumberjackConfig.MaxBackups, // Keep up to 5 old log files
-				MaxAge:     cfg.LumberjackConfig.MaxAge,     // Keep logs for 7 days
-				Compress:   cfg.LumberjackConfig.Compress,   // Compress old log files
+				Filename:   cfg.LumberjackConfig.Filename,
+				MaxSize:    cfg.LumberjackConfig.MaxSizeMB,
+				MaxBackups: cfg.LumberjackConfig.MaxBackups,
+				MaxAge:     cfg.LumberjackConfig.MaxAge,
+				Compress:   cfg.LumberjackConfig.Compress,
 			}
 
 			multiWriter := io.MultiWriter(os.Stdout, logFile)
