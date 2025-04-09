@@ -18,10 +18,11 @@ import (
 )
 
 const (
-	OutputTypeConsole = "console"
-	OutputTypeJson    = "json"
-	OutputTypePretty  = "pretty"
-	OutputLogFile     = "file"
+	OutputTypeConsole   = "console"
+	OutputTypeJson      = "json"
+	OutputTypePretty    = "pretty"
+	OutputLogFile       = "file"
+	OutputLogFilePretty = "file_pretty"
 )
 
 var once = sync.Once{}
@@ -111,6 +112,28 @@ func Init(cfg Config) Interface {
 			}
 
 			multiWriter := io.MultiWriter(os.Stdout, logFile)
+			zeroLogging = zerolog.New(multiWriter).
+				With().
+				Timestamp().
+				CallerWithSkipFrameCount(3). //Hard code to 3 for now.
+				Logger().
+				Level(level)
+		case OutputLogFilePretty:
+			if cfg.LumberjackConfig.Filename == "" {
+				log.Fatal().Msg("Lumberjack filename is required for file output")
+				return
+			}
+
+			logFile := &lumberjack.Logger{
+				Filename:   cfg.LumberjackConfig.Filename,
+				MaxSize:    cfg.LumberjackConfig.MaxSizeMB,
+				MaxBackups: cfg.LumberjackConfig.MaxBackups,
+				MaxAge:     cfg.LumberjackConfig.MaxAge,
+				Compress:   cfg.LumberjackConfig.Compress,
+			}
+
+			prettyWriter := PrettyConsoleWriter{Out: os.Stderr}
+			multiWriter := io.MultiWriter(logFile, prettyWriter)
 			zeroLogging = zerolog.New(multiWriter).
 				With().
 				Timestamp().
